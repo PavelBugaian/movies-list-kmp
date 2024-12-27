@@ -10,37 +10,30 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.jetbrains.kmpapp.screens.detail.DetailScreen
-import com.jetbrains.kmpapp.screens.list.ListScreen
+import com.jetbrains.kmpapp.screens.MovieListScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
 object ListDestination
 
 @Serializable
-data class DetailDestination(val objectId: Int)
+data class DetailDestination(
+    val objectId: Int,
+)
+
+@Serializable
+object MovieList
 
 @Composable
 fun App() {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme(),
     ) {
         Surface {
             val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = ListDestination) {
-                composable<ListDestination> {
-                    ListScreen(navigateToDetails = { objectId ->
-                        navController.navigate(DetailDestination(objectId))
-                    })
-                }
-                composable<DetailDestination> { backStackEntry ->
-                    DetailScreen(
-                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
-                        navigateBack = {
-                            navController.popBackStack()
-                        }
-                    )
+            NavHost(navController = navController, startDestination = MovieList) {
+                composable<MovieList> {
+                    MovieListScreen()
                 }
             }
         }
