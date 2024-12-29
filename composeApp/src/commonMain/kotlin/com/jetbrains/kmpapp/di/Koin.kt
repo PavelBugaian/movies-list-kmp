@@ -1,5 +1,6 @@
 package com.jetbrains.kmpapp.di
 
+import com.jetbrains.kmpapp.constants.Constants
 import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
 import com.jetbrains.kmpapp.data.KtorMuseumApi
 import com.jetbrains.kmpapp.data.MuseumApi
@@ -10,7 +11,6 @@ import com.jetbrains.kmpapp.presentation.MovieListViewModel
 import com.jetbrains.kmpapp.presentation.MovieSearchViewModel
 import com.jetbrains.kmpapp.screens.detail.DetailViewModel
 import com.jetbrains.kmpapp.screens.list.ListViewModel
-import com.jetbrains.kmpapp.utils.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType

@@ -1,0 +1,19 @@
+CREATE TABLE Person (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    birthday INTEGER AS Long NOT NULL -- Store as Unix timestamp
+);
+
+-- Queries
+selectAll:
+SELECT *
+FROM Person;
+
+insert:
+INSERT INTO Person(first_name, last_name, birthday)
+VALUES (?, ?, ?);
+
+deleteById:
+DELETE FROM Person
+WHERE id = ?;
