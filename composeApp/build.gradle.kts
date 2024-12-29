@@ -1,5 +1,16 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
+
+// Load API key from local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+val tmdbApiKey = localProperties.getProperty("TMDB_API_TOKEN") ?: ""
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,6 +21,7 @@ plugins {
 }
 
 kotlin {
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -62,12 +74,18 @@ android {
     namespace = "com.jetbrains.kmpapp"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.jetbrains.kmpapp"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "TMDB_API_TOKEN", "\"${tmdbApiKey}\"")
     }
     packaging {
         resources {
@@ -83,6 +101,27 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+// For iOS, create a Constants.kt file
+tasks.register("generateConstants") {
+    doLast {
+        val constantsFile = File("${project.projectDir}/src/commonMain/kotlin/com/jetbrains/kmpapp/constants/Constants.kt")
+        constantsFile.parentFile.mkdirs()
+        constantsFile.writeText(
+            """
+            package com.jetbrains.kmpapp.constants
+            
+            object Constants {
+                const val TMDB_API_TOKEN = "$tmdbApiKey"
+            }
+            """.trimIndent(),
+        )
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateConstants")
 }
 
 dependencies {

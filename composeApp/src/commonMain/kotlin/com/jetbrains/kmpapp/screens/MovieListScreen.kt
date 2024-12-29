@@ -2,6 +2,7 @@
 
 package com.jetbrains.kmpapp.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -35,7 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieListScreen() {
+fun MovieListScreen(navigateToSearch: () -> Unit) {
     val viewModel = koinViewModel<MovieListViewModel>()
     val movies by viewModel.movies.collectAsState()
 
@@ -43,6 +48,16 @@ fun MovieListScreen() {
         topBar = {
             TopAppBar(
                 title = { Text("Favorite Movies") },
+                actions = {
+                    IconButton(
+                        onClick = navigateToSearch,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Search movies",
+                        )
+                    }
+                },
             )
         },
     ) { padding ->
@@ -50,7 +65,12 @@ fun MovieListScreen() {
             modifier = Modifier.padding(padding),
         ) {
             items(movies) { movie ->
-                MovieListItem(movie)
+                MovieListItem(
+                    movie,
+                    onClick = {
+                        // TODO: Implement item selection
+                    },
+                )
 
                 // Add divider after each item except the last one
                 if (movie != movies.last()) {
@@ -66,13 +86,17 @@ fun MovieListScreen() {
 }
 
 @Composable
-private fun MovieListItem(movie: Movie) {
+internal fun MovieListItem(
+    movie: Movie,
+    onClick: () -> Unit,
+) {
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .height(120.dp),
+                .height(120.dp)
+                .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Thumbnail

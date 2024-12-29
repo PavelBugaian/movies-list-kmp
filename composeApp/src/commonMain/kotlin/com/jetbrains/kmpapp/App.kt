@@ -11,18 +11,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jetbrains.kmpapp.screens.MovieListScreen
+import com.jetbrains.kmpapp.screens.search.MovieSearchScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-object ListDestination
-
-@Serializable
-data class DetailDestination(
-    val objectId: Int,
-)
-
-@Serializable
 object MovieList
+
+@Serializable
+object MovieSearchDestination
 
 @Composable
 fun App() {
@@ -33,7 +29,14 @@ fun App() {
             val navController: NavHostController = rememberNavController()
             NavHost(navController = navController, startDestination = MovieList) {
                 composable<MovieList> {
-                    MovieListScreen()
+                    MovieListScreen(navigateToSearch = {
+                        navController.navigate(MovieSearchDestination)
+                    })
+                }
+                composable<MovieSearchDestination> {
+                    MovieSearchScreen(onBackClicked = {
+                        navController.navigateUp()
+                    })
                 }
             }
         }
